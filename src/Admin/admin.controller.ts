@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Put, Param, Query, Req, Request, Body 
+import { Controller, Get, Post, Delete, Put, Param, Query, Req, Request, Body, UsePipes, ValidationPipe 
  } from "@nestjs/common";
 
  import { DTOs } from "./DTOs.dto";
@@ -24,6 +24,7 @@ import { Controller, Get, Post, Delete, Put, Param, Query, Req, Request, Body
         return this.adminservice. getPatientInfo(qry);
     }
     @Post("/AddDoctor")
+     @UsePipes(ValidationPipe)
     addDcotor(@Body() mydto:DTOs):any{
         return this.adminservice.addDoctor(mydto);
     }

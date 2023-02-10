@@ -14,6 +14,6 @@ export class adminservice{
         return "this id is" +qry.id+"and name is "+qry.name;
     }
     addDoctor(mydto:DTOs):any{
-        return "Doctor inserted name: " + mydto.name+"id is: " +mydto.id;
+        return "Doctor inserted name: " + mydto.name+"id is: " +mydto.id + "email is: "+mydto.email;
     }
 }
