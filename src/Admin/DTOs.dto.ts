@@ -9,6 +9,7 @@ export class DTOs{
     @IsNumberString()
     id: number;
 
-    @IsNotEmpty()
+    @IsNotEmpty({message: "name cannot be empty"})
     name: string;
 }
+
