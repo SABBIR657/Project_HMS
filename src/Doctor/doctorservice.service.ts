@@ -19,7 +19,11 @@ getDoctorName(qry):any {
     return "the id is "+qry.id +" and name is "+qry.name;
 }
 
-createDoctor(mydto:DoctorForm):any {
+createDoctor(mydto):any {
+    
+        return "Doctor Inserted name: " + mydto.name+" and id is " + mydto.id;
+    }
+addMedicine(mydto):any {
     
         return "Doctor Inserted name: " + mydto.name+" and id is " + mydto.id;
     }
