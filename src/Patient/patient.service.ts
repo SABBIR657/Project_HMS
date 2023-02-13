@@ -1,14 +1,27 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { PatientForm } from './patient.dto';
+import { PatientForm , PatientFormlab } from './patient.dto';
 import { PATIENTS} from './patient.mock';
+import { PATIENTSLAB } from './patient.mocklab';
 
 @Injectable()
 export class PatientService {
     private patients = PATIENTS;
+    private patientlab = PATIENTSLAB;
 
     getPatients(): Promise<any> {
         return new Promise(resolve => {
             resolve(this.patients);
+        });
+    }
+
+    getPatientlabById(testid:number): Promise<any> {
+        let id = Number(testid);
+        return new Promise(resolve => {
+            const patient = this.patientlab.find(patient => patient.testid === id);
+            if (!patient) {
+                throw new HttpException('Test does not exist!', 404);
+            }
+            resolve(patient);
         });
     }
     
@@ -30,6 +43,13 @@ export class PatientService {
       });
   }
 
+  postPatientlab(patient: PatientFormlab): Promise<any> {
+    return new Promise(resolve => {
+        this.patientlab.push(patient);
+        resolve(this.patientlab);
+    });
+}
+
   deletePatientById(id: number): Promise<any> {
       const patientId = Number(id);
       return new Promise(resolve => {
@@ -41,6 +61,19 @@ export class PatientService {
           resolve(this.patients);
       });
 }
+
+deletePatientlabById(id: number): Promise<any> {
+    const patienlabtId = Number(id);
+    return new Promise(resolve => {
+        let index = this.patientlab.findIndex((patient) => patient.testid === patienlabtId);
+        if (index === -1) {
+            throw new HttpException('Test does not exist!', 404);
+        }
+        this.patientlab.splice(index, 1);
+        resolve(this.patientlab);
+    });
+}
+
 putPatientById(
     patientid: number,
     propertyName: string,
