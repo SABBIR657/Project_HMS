@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Put, Delete, Body,Param, Query } from '@nestjs/common';
-import { PatientForm } from './patient.dto';
+import { Controller, Get, Post, Put, Delete, Body,Param, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ParseIntPipe } from '@nestjs/common/pipes';
+import { PatientForm, PatientFormlab } from './patient.dto';
 import { PatientService} from './patient.service'
 @Controller('patient')
 export class PatientController {
@@ -11,25 +12,46 @@ export class PatientController {
         return patients;
     }
 
-    @Get(':patientid')
-    async getFaculty(@Param('patientid') patientid) {
+    @Get('/patient/:patientid')
+    async getPatientById(@Param('patientid') patientid) {
         const patient = await this.patientService.getPatientById(patientid);
         return patient;
     }
 
+    @Get('/patientlab/:testid')
+    async getPatientlabById(@Param('testid') testid) {
+        const patient = await this.patientService.getPatientlabById(testid);
+        return patient;
+    }
+
     @Post('/addpatient')
+    @UsePipes(new ValidationPipe())
     async postPatient(@Body() mydto: PatientForm) {
         const patient = await this.patientService.postPatient(mydto);
         return patient;
     }
+    @Post('/booklab')
+    @UsePipes(new ValidationPipe())
+    async postPatientlab(@Body() mydtolab: PatientFormlab) {
+        const patient = await this.patientService.postPatientlab(mydtolab);
+        return patient;
+    }
 
-    @Delete(':id')
+    @Delete("/deletepatient/:id")
     public async deletePatientById(@Param('id') id: number) {
         const patient = await this.patientService.deletePatientById(id);
         return patient;
     }
+
+    @Delete("/deletelab/:id")
+    public async deletePatientlabById(@Param('id') id: number) {
+        const patient = await this.patientService.deletePatientlabById(id);
+        return patient;
+    }
+
     @Put(':id')
-    public async putPatientById(@Param('id') id: number, @Query() query){
+    @UsePipes(new ValidationPipe())
+    public async putPatientById(@Param('id', ParseIntPipe) id: number, @Query() query){
         const propertyName = query.property_name;
         const propertyValue = query.property_value;
         return this.patientService.putPatientById(id, propertyName, propertyValue);
