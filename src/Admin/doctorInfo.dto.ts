@@ -1,6 +1,6 @@
 import { IsString, Length,MinLength ,MaxLength,Matches ,IsEmail} from 'class-validator';
 
-export class AdminInfo{
+export class DoctorInfo{
     
     @IsString()
     @Length(3, 20 ,{message: "must nbe 3 to 20 character"})
