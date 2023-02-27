@@ -1,19 +1,47 @@
 import { Injectable } from "@nestjs/common";
+import {InjectRepository} from '@nestjs/typeorm';
 import { query } from "express";
+import { AdminInfo } from "./createAdmin.dto";
+import { DoctorInfo } from "./doctorInfo.dto";
 import { DTOs } from "./DTOs.dto";
+import { PackageValid } from "./PackageValid.dto";
+import { AdminEntity } from "./adminentity.entity";
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class adminservice{
-    getIndex():string{
-        return "this is homepage";
+
+    constructor(
+        @InjectRepository(AdminEntity)
+        private adminRepo: Repository<AdminEntity>
+    ){}
+    getIndex():any{
+        return this.adminRepo.find();
     }
     getPatientByid(id):any{
-        return "patient id is"+id;
+        return this.adminRepo.findOneBy({id});
     }
     getPatientInfo(qry):any{
-        return "this id is" +qry.id+"and name is "+qry.name;
+        return this.adminRepo.findOneBy({id:qry.id,name:qry.name});
     }
-    addDoctor(mydto:DTOs):any{
-        return "Doctor inserted name: " + mydto.name+"id is: " +mydto.id + "email is: "+mydto.email;
+    addDoctor(mydto:DoctorInfo):any{
+       //will return here
+    }
+    UpdateDoctor(name, id):any{
+        console.log(name+id);
+        return this.adminRepo.update(id,{name:name});
+    }
+
+    CreateAdmin(mydto:AdminInfo):any{
+        const adminInfo = new AdminEntity()
+       adminInfo.name = mydto.name;
+       adminInfo.email = mydto.email;
+       adminInfo.password = mydto.password;
+       adminInfo.address = mydto.address;
+       return this.adminRepo.save(adminInfo);
+    }
+
+    addPackage(mydto:PackageValid):any{
+        return "package added";
     }
 }
