@@ -2,7 +2,7 @@ import { Controller, Get, Post, Delete, Put, Param, Query, Req, Request, Body, U
  } from "@nestjs/common";
 
  import {  DTOs } from "./DTOs.dto";
- import { DoctroInfo } from "./createAdmin.dto";
+ import { AdminInfo} from "./createAdmin.dto";
  import { adminservice } from "./adminservice.service";
  import { PackageValid } from "./PackageValid.dto";
 
@@ -25,20 +25,22 @@ import { Controller, Get, Post, Delete, Put, Param, Query, Req, Request, Body, U
     getPatientInfo(@Query() qry:any):any{
         return this.adminservice. getPatientInfo(qry);
     }
-    @Post("/AddDoctor")
+    @Post("/addDoctor")
      @UsePipes(new ValidationPipe())
-    addDcotor(@Body() mydto:DTOs):any{
+    addDcotor(@Body() mydto:AdminInfo):any{
         return this.adminservice.addDoctor(mydto);
     }
-    @Put("/UpdateEmployee")
+    @Put("/UpdateDoctor")
     @UsePipes(new ValidationPipe())
     UpdateEmployee(@Body('name')name: string, @Body('id') id: number): any{
-        return this.adminservice.UpdateEmployee(name,id);
+        return this.adminservice. UpdateDoctor(name,id);
     }
+
+    
 
     @Post("/createAdmin")
     @UsePipes(new ValidationPipe())
-    CreateAdmin(@Body() mydto:DoctroInfo):any{
+    CreateAdmin(@Body() mydto:AdminInfo):any{
         return this.adminservice.CreateAdmin(mydto);
     }
 
