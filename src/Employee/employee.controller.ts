@@ -1,6 +1,7 @@
-import { Controller,Body,Delete,Put, Get, Param, ParseIntPipe,Query,Post } from "@nestjs/common"; 
-import {EmployeeForm} from "./employeeform.dto";
+import { Controller,Body,Delete,Put, Get, Param, ParseIntPipe,Query,Post,UsePipes,ValidationPipe } from "@nestjs/common"; 
+import {EmployeeForm,EmployeeLogin,EmployeeRegistration,EmployeeInsert,UpdateEmployee,DeleteEmployee} from "./employeeform.dto";
 import { EmployeeService} from "./employeeservice.service";
+
 
 @Controller("/Employee")
 
@@ -21,22 +22,45 @@ export class EmployeeController
     getUserByName(@Query() qry:any): any{
         return this.emoloyeeservice.getUserByName(qry);
     }
+    @Get("/patientList")
+    getPatientList():any{
+      return this.emoloyeeservice.getPatientList();
+    }
 
     @Post("/insertEmployee")
-    insertEmployee(@Body() mydto:EmployeeForm):any{
+    @UsePipes(new ValidationPipe())
+    insertEmployee(@Body() mydto:EmployeeInsert):any{
         return this.emoloyeeservice.insertEmployee(mydto);
     }
 
+    @Post("/loginEmployee")
+    @UsePipes(new ValidationPipe())
+    loginEmployee(
+      @Body() mydto:EmployeeLogin
+    ) : any {
+      return this.emoloyeeservice.loginEmployee(mydto);
+    }
+
+    @Post("/registration")
+    @UsePipes(new ValidationPipe())
+    registrationEmp(
+      @Body() mydto:EmployeeRegistration
+    ): any {
+      return this.emoloyeeservice.registrationEmp(mydto);
+    }
+
     @Put("/updateEmployee/")
-    
+    @UsePipes(new ValidationPipe())
     updateEmployee( 
       @Body("name") name:string, 
-      @Body("id") id:number
+      @Body("id") id:number,
+      mydto:UpdateEmployee
       ): any {
-    return this.emoloyeeservice.updateEmployee(name, id);
+    return this.emoloyeeservice.updateEmployee(mydto);
     }
     
     @Put("/updateEmployee/:id")
+    @UsePipes(new ValidationPipe())
     updateEmployeebyid( 
       @Body("name") name:string, 
       @Param("id", ParseIntPipe) id:number
@@ -46,8 +70,9 @@ export class EmployeeController
 
     @Delete("/deleteEmployee/:id")
     deleteEmployeebyid( 
-     @Param("id", ParseIntPipe) id:number
+     @Param("id", ParseIntPipe) id:number,
+     mydto:DeleteEmployee
       ): any {
-    return this.emoloyeeservice.deleteEmployeebyid(id);
+    return this.emoloyeeservice.deleteEmployeebyid(mydto);
     }
 }
