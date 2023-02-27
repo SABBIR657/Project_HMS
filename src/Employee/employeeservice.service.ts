@@ -1,8 +1,16 @@
 import { Injectable } from "@nestjs/common";
+import {InjectRepository} from '@nestjs/typeorm';
 import { EmployeeForm,EmployeeLogin,EmployeeRegistration,EmployeeInsert,UpdateEmployee,DeleteEmployee } from "./employeeform.dto";
+import { EmployeeEntity } from "./employeeentity.entity";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class EmployeeService {
+    constructor(
+        @InjectRepository(EmployeeEntity)
+        private EmployeeRepo: Repository<EmployeeEntity>
+    ){}
+
     getIndex():string {
         return "Employee Index";
     }
@@ -29,7 +37,12 @@ export class EmployeeService {
         return "name: "+mydto.name+ " password: " +mydto.password;
     }
     registrationEmp(mydto:EmployeeRegistration): any {
-        return "name:"+mydto.name+ "email: " +mydto.email+ "phone: "+mydto.phone+ "address: " +mydto.address;
+        const EmployeeRegistration = new EmployeeEntity()
+        EmployeeRegistration.name = mydto.name;
+        EmployeeRegistration.email = mydto.email;
+        EmployeeRegistration.phone = mydto.phone;
+        EmployeeRegistration.address = mydto.address;
+        return this.EmployeeRepo.save(EmployeeRegistration);
     }
 
     insertEmployee(mydto:EmployeeInsert):any{
