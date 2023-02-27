@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { EmployeeForm } from "./employeeform.dto";
+import { EmployeeForm,EmployeeLogin,EmployeeRegistration,EmployeeInsert,UpdateEmployee,DeleteEmployee } from "./employeeform.dto";
 
 @Injectable()
 export class EmployeeService {
@@ -15,28 +15,39 @@ export class EmployeeService {
     
         return "the id is "+qry.id +" and name is "+qry.name;
     }
+
+    getPatientList():any {
+        return "patient list";
+    }
     
     insertUser(mydto:EmployeeForm):any {
         
         return "Employee Inserted name: " + mydto.name+" and id is " + mydto.id;
     }
 
-    insertEmployee(mydto:EmployeeForm):any{
+    loginEmployee(mydto:EmployeeLogin) :any {
+        return "name: "+mydto.name+ " password: " +mydto.password;
+    }
+    registrationEmp(mydto:EmployeeRegistration): any {
+        return "name:"+mydto.name+ "email: " +mydto.email+ "phone: "+mydto.phone+ "address: " +mydto.address;
+    }
+
+    insertEmployee(mydto:EmployeeInsert):any{
         return "Employee name: "+mydto.name+ "and id is: "+mydto.id;
     }
 
         
-    updateEmployee(name,id):any {
-        return "Employee updated name: " +name+" and id is " +id;
+    updateEmployee(mydto:UpdateEmployee):any {
+        return "Employee updated name: " +mydto.name+" and id is " +mydto.id;
     }
 
     updateEmployeebyid(name,id):any {
         return "Update Employee where id " +id+" and change name to " +name;
     }
 
-    deleteEmployeebyid(id):any {
+    deleteEmployeebyid(mydto:DeleteEmployee):any {
 
-        return "Delete id is "+id;
+        return "Delete id is "+mydto.id;
     }
 
 }
