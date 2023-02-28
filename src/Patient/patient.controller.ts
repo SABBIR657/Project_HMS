@@ -37,6 +37,13 @@ export class PatientController {
         return patient;
     }
 
+    @Post('/appoinment')
+    @UsePipes(new ValidationPipe())
+    async postAppointment(@Body() mydtolab: PatientFormlab) {
+        const patient = await this.patientService.postPatientlab(mydtolab);
+        return patient;
+    }
+
     @Delete("/deletepatient/:id")
     public async deletePatientById(@Param('id') id: number) {
         const patient = await this.patientService.deletePatientById(id);

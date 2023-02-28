@@ -1,92 +1,105 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { PatientForm , PatientFormlab } from './patient.dto';
 import { PATIENTS} from './patient.mock';
 import { PATIENTSLAB } from './patient.mocklab';
+import { LabEntity, PatientEntity } from './patiententity.entity';
 
 @Injectable()
 export class PatientService {
     private patients = PATIENTS;
     private patientlab = PATIENTSLAB;
+    adminRepo: any;
+    constructor(
+        @InjectRepository(LabEntity)
+        private LabRepo: Repository<LabEntity>,
+        @InjectRepository(PatientEntity)
+        private PatientRepo: Repository<PatientEntity>,
+     
+      ) {}
+      
 
-    getPatients(): Promise<any> {
-        return new Promise(resolve => {
-            resolve(this.patients);
-        });
+     getPatients():Promise<any>{
+        const patients = this.PatientRepo.find();
+        if(!patients || patients[0]){
+            throw new HttpException('Not Found!', 404);
+        }
+        return patients;
     }
 
-    getPatientlabById(testid:number): Promise<any> {
-        let id = Number(testid);
-        return new Promise(resolve => {
-            const patient = this.patientlab.find(patient => patient.testid === id);
-            if (!patient) {
-                throw new HttpException('Test does not exist!', 404);
-            }
-            resolve(patient);
-        });
+    getPatientById(patientid): Promise<any> {
+        const patient = this.PatientRepo.findOneBy({patientid});
+        if(!patient || patient[0]){
+            throw new HttpException('Not Found!', 404);
+        }
+        return patient;
+    }
+
+    getPatientlabById(testid): Promise<any> {
+        const lab = this.LabRepo.findOneBy({testid});
+        if(!lab || lab[0]){
+            throw new HttpException('Not Found!', 404);
+        }
+        return lab;
     }
     
-    getPatientById(patientid:number): Promise<any> {
-        let id = Number(patientid);
-        return new Promise(resolve => {
-            const patient = this.patients.find(patient => patient.patientid === id);
-            if (!patient) {
-                throw new HttpException('Patient does not exist!', 404);
-            }
-            resolve(patient);
-        });
-    }
  
     postPatient(patient: PatientForm): Promise<any> {
-      return new Promise(resolve => {
-          this.patients.push(patient);
-          resolve(this.patients);
-      });
+        const patientadd = new PatientEntity()
+        patientadd.patientname = patient.patientname;
+        patientadd.username = patient.username;
+        patientadd.email = patient.email;
+        patientadd.password = patient.password;
+        patientadd.phone = patient.phone;
+       return this.PatientRepo.save(patientadd);
   }
 
-  postPatientlab(patient: PatientFormlab): Promise<any> {
-    return new Promise(resolve => {
-        this.patientlab.push(patient);
-        resolve(this.patientlab);
-    });
+  postPatientlab(patientdto: PatientFormlab): Promise<any> {
+    const patientlab = new LabEntity()
+
+    patientlab.patientname = patientdto.patientname;
+    patientlab.username = patientdto.username;
+    patientlab.email = patientdto.email;
+    patientlab.testname = patientdto.testname;
+   return this.LabRepo.save(patientlab);
 }
 
-  deletePatientById(id: number): Promise<any> {
-      const patientId = Number(id);
-      return new Promise(resolve => {
-          let index = this.patients.findIndex((patient) => patient.patientid === patientId);
-          if (index === -1) {
-              throw new HttpException('Patient does not exist!', 404);
-          }
-          this.patients.splice(index, 1);
-          resolve(this.patients);
-      });
+  deletePatientById(id): any {
+    const dltpatient = this.PatientRepo.findOneBy(id);
+      if(!dltpatient || dltpatient[0]){
+        throw new HttpException('Not Found!', 404);
+    }
+    else{
+    const patient = this.PatientRepo.delete(id);
+    return "Patient deleted successfully!";
+    }
 }
 
-deletePatientlabById(id: number): Promise<any> {
-    const patienlabtId = Number(id);
-    return new Promise(resolve => {
-        let index = this.patientlab.findIndex((patient) => patient.testid === patienlabtId);
-        if (index === -1) {
-            throw new HttpException('Test does not exist!', 404);
-        }
-        this.patientlab.splice(index, 1);
-        resolve(this.patientlab);
-    });
+deletePatientlabById(id): any {
+    const dltpatientlab = this.PatientRepo.findOneBy(id);
+    if(!dltpatientlab || dltpatientlab[0]){
+      throw new HttpException('Not Found!', 404);
+  }
+  else{
+  const patient = this.LabRepo.delete(id);
+  return "Lab deleted successfully!";
+  }
 }
 
-putPatientById(
+async putPatientById(
     patientid: number,
     propertyName: string,
     propertyValue: string,
 ): Promise<any>{
-    const patientId = Number(patientid);
-    return new Promise((resolve) => {
-        const index = this.patients.findIndex((patient) => patient.patientid === patientId);
-        if(index === -1){
-            throw new HttpException('Not Found', 404);
-        }
-        this.patients[index][propertyName] = propertyValue;
-        return resolve(this.patients);
-    });
+   const patient = await this.PatientRepo.update({patientid},
+    {
+        [propertyName]:  propertyValue,
+    },
+    );
+    if(!patient){
+        throw new HttpException("Not Found", 404);
+    }
+    return "Updated Successfully!";
 }
 }

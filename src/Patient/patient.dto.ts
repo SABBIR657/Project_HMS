@@ -7,10 +7,12 @@ export class PatientForm{
     @MaxLength(65)
     username: string;
 
-    @IsNotEmpty()
-    @IsNumber()
+   /* @IsNotEmpty({message: "Please provide your password"})
+    @IsString()
+    @MinLength(5)
+    @MaxLength(65)*/
+    password: string;
 
-    patientid: number;
 
     @IsNotEmpty({message: "Please provide your name"})
     @IsString()
@@ -38,13 +40,8 @@ export class PatientFormlab{
     @IsString()
     @MinLength(3)
     @MaxLength(65)
-    
+
     username: string;
-
-    @IsNotEmpty()
-    @IsNumber()
-
-    testid: number;
 
     @IsNotEmpty({message: "Please provide your name"})
     @IsString()
@@ -64,5 +61,13 @@ export class PatientFormlab{
     @MaxLength(65)
 
     testname: string;
+
+}
+export class AppointmnetForm{
+   patientname: string;
+   age: number;
+   department: string;
+   doctorname: string;
+   date: Date;
 
 }
