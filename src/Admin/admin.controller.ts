@@ -36,7 +36,7 @@ import { Controller, Get, Post, Delete, Put, Param, Query, Req, Request, Body, U
         return this.adminservice. UpdateDoctor(name,id);
     }
 
-    
+
 
     @Post("/createAdmin")
     @UsePipes(new ValidationPipe())
@@ -44,8 +44,16 @@ import { Controller, Get, Post, Delete, Put, Param, Query, Req, Request, Body, U
         return this.adminservice.CreateAdmin(mydto);
     }
 
+    @Put("/UpdateAdmin")
+    @UsePipes(new ValidationPipe())
+    UpdateAdmin(@Body('name')name: string, @Body('id')
+    id: number):any{
+        return this.adminservice.UpdateAdmin(name,id);
+    }
     
-    @Post("addPackage")
+
+    
+    @Post("/addPackage")
     @UsePipes(new ValidationPipe())
     addPackage(@Body() mydto:PackageValid):any{
         return this.adminservice.addPackage(mydto);

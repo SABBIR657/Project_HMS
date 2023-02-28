@@ -7,14 +7,19 @@ import { DTOs } from "./DTOs.dto";
 import { PackageValid } from "./PackageValid.dto";
 import { AdminEntity } from "./adminentity.entity";
 import { Repository } from 'typeorm';
+import { PackageEntity } from "./packageentity.entity";
 
 @Injectable()
 export class adminservice{
 
     constructor(
         @InjectRepository(AdminEntity)
-        private adminRepo: Repository<AdminEntity>
+       // @InjectRepository(PackageEntity)
+        private adminRepo: Repository<AdminEntity>,
+       // private packageRepo: Repository<PackageEntity>
+
     ){}
+
     getIndex():any{
         return this.adminRepo.find();
     }
@@ -40,8 +45,16 @@ export class adminservice{
        adminInfo.address = mydto.address;
        return this.adminRepo.save(adminInfo);
     }
+    UpdateAdmin(name, id):any{
+        return this.adminRepo.update(id,{name: name});
+    }
 
     addPackage(mydto:PackageValid):any{
-        return "package added";
+        const packageInfo = new PackageEntity()
+        packageInfo.packageName = mydto.packageName;
+        packageInfo.Price = mydto.Price;
+        packageInfo.Catagory = mydto.Category;
+        packageInfo.assignDoctor = mydto.assignDoctor;
+       // return this.packageRepo.save(packageInfo);
     }
 }
