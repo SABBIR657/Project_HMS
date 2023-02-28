@@ -10,7 +10,6 @@ import { LabEntity, PatientEntity } from './patiententity.entity';
 export class PatientService {
     private patients = PATIENTS;
     private patientlab = PATIENTSLAB;
-    adminRepo: any;
     constructor(
         @InjectRepository(LabEntity)
         private LabRepo: Repository<LabEntity>,
