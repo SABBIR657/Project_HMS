@@ -5,15 +5,13 @@ import { AdminInfo } from "./createAdmin.dto";
 import { DoctorInfo } from "./doctorInfo.dto";
 import { DTOs } from "./DTOs.dto";
 import { PackageValid } from "./PackageValid.dto";
-import { AdminEntity, DoctorEntity } from "./adminentity.entity";
+import { AdminEntity} from "./adminentity.entity";
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class adminservice{
 
     constructor(
-        @InjectRepository(DoctorEntity)
-        private doctorRepo: Repository<DoctorEntity>,
         @InjectRepository(AdminEntity)
         private adminRepo: Repository<AdminEntity>
     ){}
@@ -27,12 +25,6 @@ export class adminservice{
         return this.adminRepo.findOneBy({id:qry.id,name:qry.name});
     }
     addDoctor(mydto:DoctorInfo):any{
-        const doctorInfo = new AdminEntity()
-        doctorInfo.name = mydto.name;
-        doctorInfo.email = mydto.email;
-        doctorInfo.password = mydto.password;
-        doctorInfo.address = mydto.address;
-        return this.doctorRepo.save(doctorInfo);
     }
     UpdateDoctor(name, id):any{
         console.log(name+id);
