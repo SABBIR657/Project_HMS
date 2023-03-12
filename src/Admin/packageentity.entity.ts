@@ -15,6 +15,6 @@ export class PackageEntity{
     assignDoctor: string;
 
     @Column()
-    Catagory: string;
+    Category: string;
     
 }

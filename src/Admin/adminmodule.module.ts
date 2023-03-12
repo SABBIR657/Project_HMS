@@ -9,7 +9,7 @@ import { PackageEntity } from "./packageentity.entity";
 @Module({
     // imports: [TypeOrmModule.forFeature(AdminEntity)],
 
-    imports: [TypeOrmModule.forFeature([AdminEntity])],
+    imports: [TypeOrmModule.forFeature([AdminEntity, PackageEntity])],
     
     controllers: [AdminController],
     providers: [adminservice],

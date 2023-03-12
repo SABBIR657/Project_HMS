@@ -18,6 +18,9 @@ export class AdminEntity{
   @Column()
   address: string;
 
+  @Column()
+  filename:string;
+
 
 
 
