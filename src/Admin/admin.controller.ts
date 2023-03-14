@@ -16,6 +16,8 @@ import { Controller, Get, Post, Delete, Put, Param, Query, Req, Request, Body, U
 
  import {diskStorage} from 'multer';
 import { FileInterceptor } from "@nestjs/platform-express";
+import { AnalystDto } from "src/BuisnessAnalyst/Analyst.dto";
+import { AnalystService } from "src/BuisnessAnalyst/Analyst.service";
 import session from "express-session";
 import { SessionGuard } from "./session.guard";
 
@@ -23,9 +25,8 @@ import { SessionGuard } from "./session.guard";
  @Controller('/admin')
  export class AdminController
  {
-    constructor(private adminservice: adminservice){
-
-    }
+    constructor(private adminservice: adminservice,
+        private analystService: AnalystService){ }
 
     @Get("/index")
     getIndex(): any{
@@ -82,6 +83,22 @@ import { SessionGuard } from "./session.guard";
         return this.adminservice.deleteAdminbyid(id);
     }
 
+    @Post("/insertAnalyst")
+    @UsePipes(new ValidationPipe())
+    insertAnalyst(@Body() Analyst: AnalystDto):any{
+        return this.analystService.insertAnalyst(Analyst);
+    }
+
+    @Get("/findAnalystbyAdmin/:id")
+    getAnalystByAdminID(@Param('id', ParseIntPipe)id: number):any{
+        return this.adminservice.getAnalystByAdminID(id);
+    }
+
+    @Get("/findadminbyanalyst/:id")
+    getAdmintByAnalystID(@Param('id', ParseIntPipe) id: number):any{
+        return this.analystService.getAdminByAnalystID(id);
+    }
+
     
     @Post("/addPackage")
     @UsePipes(new ValidationPipe())
@@ -135,11 +152,18 @@ if(this.adminservice.signin(mydto))
   return {message:"success"};
 
 }
+
 else
 {
   return {message:"invalid credentials"};
 }
  
+}
+
+@Post("/sendMail")
+sendEmail(@Body() mydata)
+{
+    return this.adminservice.sendEmail(mydata);
 }
 
 @Get("/signout")

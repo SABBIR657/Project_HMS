@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { PackageEntity } from "./packageentity.entity";
 import * as bcrypt from 'bcrypt';
 import { updateAdmin } from "./updateAdmin.dto";
+import { MailerService } from "@nestjs-modules/mailer";
 
 @Injectable()
 export class adminservice{
@@ -20,6 +21,8 @@ export class adminservice{
         private adminRepo: Repository<AdminEntity>,
         @InjectRepository(PackageEntity)
        private packageRepo: Repository<PackageEntity>,
+
+       private mailerService: MailerService
 
     ){}
 
@@ -60,6 +63,15 @@ export class adminservice{
         return this.adminRepo.delete(id);
     }
 
+    getAnalystByAdminID(id):any{
+        return this.adminRepo.findOne({
+            where: {id:id},
+            relations: {
+                analysists: true,
+            },
+        });
+    }
+
     addPackage(mydto:PackageValid):any{
         const packageInfo = new PackageEntity()
         packageInfo.packageName = mydto.packageName;
@@ -94,5 +106,15 @@ export class adminservice{
     else{
         return 0;
     }
+    }
+
+    async sendEmail(mydata)
+    {
+        console.log(mydata.email)
+        return await this.mailerService.sendMail({
+            to: mydata.email,
+            subject: mydata.subject,
+            text: mydata.text,
+        });
     }
 }
