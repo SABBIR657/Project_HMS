@@ -7,14 +7,25 @@ import { DTOs } from "./DTOs.dto";
 import { PackageValid } from "./PackageValid.dto";
 import { AdminEntity } from "./adminentity.entity";
 import { Repository } from 'typeorm';
+import { PackageEntity } from "./packageentity.entity";
+import * as bcrypt from 'bcrypt';
+import { updateAdmin } from "./updateAdmin.dto";
+import { MailerService } from "@nestjs-modules/mailer";
 
 @Injectable()
 export class adminservice{
 
     constructor(
         @InjectRepository(AdminEntity)
-        private adminRepo: Repository<AdminEntity>
+       
+        private adminRepo: Repository<AdminEntity>,
+        @InjectRepository(PackageEntity)
+       private packageRepo: Repository<PackageEntity>,
+
+       private mailerService: MailerService
+
     ){}
+
     getIndex():any{
         return this.adminRepo.find();
     }
@@ -40,8 +51,70 @@ export class adminservice{
        adminInfo.address = mydto.address;
        return this.adminRepo.save(adminInfo);
     }
+    UpdateAdmin(name, email):any{
+        return this.adminRepo.update({email:email}, {name:name});
+    }
+
+    updateAdminbyid(mydto:updateAdmin, id):any{
+        return this.adminRepo.update(id,mydto);
+    }
+
+    deleteAdminbyid(id):any{
+        return this.adminRepo.delete(id);
+    }
+
+    getAnalystByAdminID(id):any{
+        return this.adminRepo.findOne({
+            where: {id:id},
+            relations: {
+                analysists: true,
+            },
+        });
+    }
 
     addPackage(mydto:PackageValid):any{
-        return "package added";
+        const packageInfo = new PackageEntity()
+        packageInfo.packageName = mydto.packageName;
+        packageInfo.Price = mydto.Price;
+        packageInfo.Category = mydto.Category;
+        packageInfo.assignDoctor = mydto.assignDoctor;
+        return this.packageRepo.save(packageInfo);
+    }
+    ViewPackage():any{
+        return this.packageRepo.find();
+    }
+    deletePackage(id): any{
+        const package1 = this.packageRepo.delete(id);
+        return "package deleted";
+
+    }
+
+    async signup(mydto){
+        const salt = await bcrypt.genSalt();
+        const hassedpassed = await bcrypt.hash(mydto.password, salt);
+        mydto.password= hassedpassed;
+        return this.adminRepo.save(mydto);
+    }
+
+    async signin(mydto){
+        console.log(mydto.password);
+    const mydata =  await this.adminRepo.findOneBy({email: mydto.email});
+    const isMatch = await bcrypt.compare(mydto.password, mydata.password);
+    if(isMatch){
+        return 1;
+    }
+    else{
+        return 0;
+    }
+    }
+
+    async sendEmail(mydata)
+    {
+        console.log(mydata.email)
+        return await this.mailerService.sendMail({
+            to: mydata.email,
+            subject: mydata.subject,
+            text: mydata.text,
+        });
     }
 }

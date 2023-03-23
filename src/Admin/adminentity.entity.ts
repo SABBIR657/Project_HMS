@@ -1,3 +1,4 @@
+import { AnalystEntity } from 'src/BuisnessAnalyst/Analyst.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany,BaseEntity } from 'typeorm';
 
 @Entity("admin")
@@ -17,6 +18,13 @@ export class AdminEntity{
 
   @Column()
   address: string;
+
+  @Column()
+  filename:string;
+
+  @OneToMany(() => AnalystEntity, (analyst)=> analyst.admin)
+
+  analysists: AnalystEntity[]
 
 
 

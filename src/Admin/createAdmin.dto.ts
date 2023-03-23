@@ -1,4 +1,4 @@
-import { IsString, Length,MinLength ,MaxLength,Matches ,IsEmail} from 'class-validator';
+import { IsString, Length,MinLength ,MaxLength,Matches ,IsEmail, IsNotEmpty} from 'class-validator';
 
 export class AdminInfo{
     
@@ -13,9 +13,13 @@ export class AdminInfo{
    
     password: string;
     
-    @MinLength(11)
+    @IsNotEmpty()
+    @MinLength(6)
     address: string;
     
     @IsEmail()
     email: string;
+    
+    @IsNotEmpty()
+    filename:string;
 }

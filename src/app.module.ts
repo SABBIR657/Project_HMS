@@ -6,10 +6,11 @@ import { DoctorModule } from './Doctor/doctormodule.module';
 import { EmployeeModule } from './Employee/employeemodule.module';
 import { PatientModule } from './Patient/patient.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AnalystModule } from './BuisnessAnalyst/Analyst.module';
 
 
 @Module({
-  imports: [adminmodule,DoctorModule,EmployeeModule, PatientModule, TypeOrmModule.forRoot(
+  imports: [adminmodule,DoctorModule,EmployeeModule, AnalystModule,PatientModule, TypeOrmModule.forRoot(
     {
       type: 'postgres',
       host: 'localhost',
@@ -24,7 +25,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       synchronize: true, 
     }
   )],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
